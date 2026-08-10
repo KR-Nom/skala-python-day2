@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>실습4 결과보고서</title>
+  <style>
+    @page { size: A4; margin: 0; }
+    :root { --ink:#171717; --text:#2b2b2b; --sub:#666; --line:#bdbdbd; --soft:#f4f4f2; --paper:#fff; }
+    * { box-sizing:border-box; }
+    html, body { margin:0; background:#e8e8e6; color:var(--text); font-family:"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif; line-height:1.6; word-break:keep-all; }
+    body { padding:52px 0; }
+    .toolbar { position:fixed; z-index:5; top:16px; left:50%; transform:translateX(-50%); display:flex; gap:12px; align-items:center; padding:8px 12px; border:1px solid #ccc; border-radius:4px; background:#fff; box-shadow:0 2px 8px #0002; font-size:12px; }
+    button { border:0; border-radius:3px; padding:8px 14px; background:#222; color:#fff; cursor:pointer; }
+    .image-tools { display:flex; gap:7px; align-items:center; padding-left:10px; border-left:1px solid #ddd; }
+    .image-tools input { width:110px; accent-color:#222; }
+    .image-tools button { padding:6px 9px; border:1px solid #aaa; background:#fff; color:#222; }
+    figure img.image-selected { outline:2px solid #555; outline-offset:4px; }
+    .page { width:210mm; min-height:297mm; margin:0 auto 18px; padding:16mm 18mm; background:var(--paper); box-shadow:0 1px 8px #0002; break-after:page; }
+    .first-page { padding-top:12mm; padding-bottom:12mm; }
+    .page:last-child { break-after:auto; }
+    .eyebrow { color:var(--sub); font-size:12px; font-weight:600; letter-spacing:.04em; }
+    h1 { margin:12px 0 8px; color:var(--ink); font-size:31px; line-height:1.25; letter-spacing:-.03em; }
+    h1::after { content:""; display:block; width:100%; height:1px; margin-top:12px; background:#222; }
+    h2 { margin:0 0 12px; padding:0 0 6px; border-bottom:1.5px solid #222; color:var(--ink); font-size:20px; letter-spacing:-.02em; }
+    h3 { margin:15px 0 6px; color:var(--ink); font-size:15px; }
+    p { margin:7px 0 12px; }
+    code { padding:1px 4px; border:1px solid #ddd; border-radius:2px; background:#f3f3f1; color:#111; font:0.9em Menlo,Consolas,monospace; }
+    .author { margin-top:8px; font-size:14px; color:#444; }
+    .muted { color:var(--sub); }
+    .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+    .card { padding:12px; border:1px solid var(--line); background:#fff; }
+    .card strong { display:block; margin-bottom:2px; color:var(--ink); font-size:17px; }
+    table { width:100%; border-collapse:collapse; margin:8px 0 12px; font-size:12px; }
+    th, td { padding:7px 8px; border:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { background:#e8e8e6; color:#111; font-weight:700; }
+    .flow { display:flex; align-items:center; gap:7px; margin:18px 0; }
+    .flow span { flex:1; padding:9px 6px; border:1px solid #aaa; background:#fafafa; color:#222; text-align:center; font-size:12px; font-weight:600; }
+    .flow b { color:#111; }
+    pre { overflow:hidden; white-space:pre-wrap; padding:11px 13px; border:1px solid #ccc; background:#f5f5f3; color:#202020; font:11px/1.45 Menlo,Consolas,monospace; }
+    .note { margin:14px 0; padding:10px 12px; border-left:3px solid #333; background:#f3f3f1; }
+    figure { margin:16px 0 20px; padding:10px; border:1px solid var(--line); background:#fff; text-align:center; break-inside:avoid; }
+    figure img { display:block; width:100%; max-width:155mm; height:auto; max-height:90mm; margin:0 auto; object-fit:contain; }
+    figcaption { margin-top:8px; color:#555; font-size:12px; }
+    .capture-placeholder { margin:12px 0; padding:18px; border:1px dashed #999; color:#666; text-align:center; font-size:12px; }
+    .terminal-capture { min-height:48mm; margin:10px 0 14px; padding:12px; border:1px dashed #999; background:#fff; color:#555; text-align:center; break-inside:avoid; }
+    .terminal-capture .label { margin:10mm 0 3mm; font-weight:700; }
+    .terminal-capture small { display:block; color:#777; }
+    .output-list { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:12px 0; }
+    .output-list div { padding:9px; border:1px solid var(--line); background:#fff; font-size:12px; }
+    ul { margin-top:6px; padding-left:20px; }
+    @media print { html,body { background:#fff; } body { padding:0; } .toolbar { display:none; } .page { margin:0; box-shadow:none; } }
+  </style>
+</head>
+<body contenteditable="true">
+  <div class="toolbar" contenteditable="false">
+    <button onclick="window.print()">PDF로 저장</button>
+    <span class="image-tools">
+      <label for="image-size">이미지 크기</label>
+      <input id="image-size" type="range" min="30" max="100" step="5" value="100" disabled>
+      <span id="image-size-value">선택 안 됨</span>
+      <button id="image-reset" type="button" disabled>원본 크기</button>
+    </span>
+    <span>본문은 직접 수정할 수 있습니다.</span>
+  </div>
+
+  <main id="report-content">
+
+  <section class="page first-page">
+    <div class="eyebrow">Python 데이터 분석 실습 4</div>
+    <h1>실습4 결과보고서</h1>
+    <p class="author">P023 장현진</p>
+    <h2>1. 과제 개요</h2>
+    <p>이번 실습은 실습 3에서 수행한 데이터 정제 결과를 다음 분석 단계로 확장하는 과정입니다. 정제 데이터의 분포를 시각적으로 확인하고, 통계적으로 의미 있는 차이와 관계를 검정한 뒤, 판매 금액을 예측하는 회귀 Pipeline을 구성했습니다. 마지막으로 분석 결과를 재사용할 수 있도록 이미지, HTML, 모델 파일로 저장했습니다.</p>
+    <table><tr><th>구분</th><th>구현 내용</th><th>산출물·결과</th></tr>
+      <tr><td>EDA</td><td>매출 분포·지역별 분포·월별 추이·상관관계 시각화</td><td>eda_dashboard.png</td></tr>
+      <tr><td>통계 검정</td><td>서울·부산 t-test, 지역·카테고리 카이제곱 검정</td><td>p-value와 해석 출력</td></tr>
+      <tr><td>머신러닝</td><td>전처리와 Ridge 회귀를 Pipeline으로 구성</td><td>R² 0.8426, RMSE 834,232.99</td></tr>
+      <tr><td>결과 저장</td><td>EDA 이미지·Plotly HTML·학습 모델 저장</td><td>outputs 폴더 3개 파일</td></tr>
+    </table>
+    <h3>1.1 전체 처리 흐름</h3>
+    <div class="flow"><span>CSV 입력</span><b>→</b><span>실습 3 정제</span><b>→</b><span>EDA·검정</span><b>→</b><span>모델 학습</span><b>→</b><span>결과 저장</span></div>
+    <h2>2. 실행 환경 및 구조</h2>
+    <table><tr><th>항목</th><th>내용</th></tr>
+      <tr><td>실행 파일</td><td>판교_1반_장현진.py</td></tr>
+      <tr><td>연계 모듈</td><td>practice3_analysis.py</td></tr>
+      <tr><td>입력 데이터</td><td>sales_100k.csv, 실제 실행 기준 1,000,000행 × 11열</td></tr>
+      <tr><td>가상환경</td><td>.venv, Python 3.14 계열</td></tr>
+    </table>
+  </section>
+
+  <section class="page">
+    <h2>2. 실행 환경 및 구조</h2>
+    <h3>2.1 디렉터리 구조</h3>
+    <pre>Day2/
+├── 판교_1반_장현진.py
+├── practice3_analysis.py
+├── sales_100k.csv
+├── requirements.txt
+├── outputs/
+│   ├── eda_dashboard.png
+│   ├── regional_category_sales.html
+│   └── sales_ridge_pipeline.joblib
+└── .venv/</pre>
+    <h3>2.2 필수 라이브러리 버전 및 역할</h3>
+    <table><tr><th>라이브러리</th><th>requirements.txt 버전</th><th>사용 목적</th></tr>
+      <tr><td>pandas</td><td>&gt;=2.2, &lt;3.0</td><td>데이터프레임 처리·집계</td></tr>
+      <tr><td>polars</td><td>&gt;=1.0, &lt;2.0</td><td>실습 3 Polars 집계 연계</td></tr>
+      <tr><td>duckdb</td><td>&gt;=1.0, &lt;2.0</td><td>실습 3 SQL 집계 연계</td></tr>
+      <tr><td>matplotlib / seaborn</td><td>matplotlib &gt;=3.8,&lt;4.0<br>seaborn &gt;=0.13,&lt;1.0</td><td>EDA 그래프와 대시보드</td></tr>
+      <tr><td>scipy</td><td>&gt;=1.11, &lt;2.0</td><td>t-test·카이제곱 검정</td></tr>
+      <tr><td>scikit-learn</td><td>&gt;=1.4, &lt;2.0</td><td>전처리·Ridge·Pipeline·평가</td></tr>
+      <tr><td>joblib</td><td>&gt;=1.3, &lt;2.0</td><td>모델 저장·재로딩</td></tr>
+      <tr><td>plotly</td><td>&gt;=5.20, &lt;7.0</td><td>인터랙티브 HTML 차트</td></tr>
+    </table>
+    <h3>2.3 실행 전 준비</h3>
+    <p>프로젝트 폴더에 입력 CSV와 실습 3 모듈을 배치하고, 가상환경에서 requirements.txt의 라이브러리를 설치합니다. 실행 결과는 프로젝트 내부 outputs 폴더에 저장되도록 구성했습니다.</p>
+    <pre>python -m pip install -r requirements.txt
+python 판교_1반_장현진.py</pre>
+  </section>
+
+  <section class="page">
+    <h2>2.4 교재 요구사항 대응</h2>
+    <table><tr><th>교재 요구사항</th><th>현재 구현</th><th>확인 근거</th></tr>
+      <tr><td>2×2 서브플롯으로 시각화 4종 구성</td><td>히스토그램+KDE, 박스플롯, 월별 라인, 상관 히트맵</td><td><code>plt.subplots(2, 2)</code>, eda_dashboard.png</td></tr>
+      <tr><td>t-test 통계량·p-value와 해석 출력</td><td>서울·부산 평균 매출 Welch t-test</td><td>t=0.6524, p=0.514147, 차이 없음 해석</td></tr>
+      <tr><td>카이제곱 p-value와 해석 출력</td><td>지역·카테고리 교차표 독립성 검정</td><td>χ²=74.9919, p=0.009854, 독립 아님 해석</td></tr>
+      <tr><td>전처리와 모델을 Pipeline 객체로 구성</td><td>ColumnTransformer와 Ridge를 하나의 Pipeline으로 연결</td><td><code>fit()</code>, <code>predict()</code>, <code>score()</code> 실행</td></tr>
+      <tr><td>모델 파일 저장</td><td>Pipeline 전체를 joblib 형식으로 저장·재로딩</td><td>sales_ridge_pipeline.joblib, 예측 일치 True</td></tr>
+      <tr><td>Plotly 인터랙티브 차트 HTML 저장</td><td>지역·카테고리별 총매출 막대 차트</td><td><code>write_html()</code>, regional_category_sales.html</td></tr>
+    </table>
+    <h3>2.5 EDA 차트별 확인 목적</h3>
+    <table><tr><th>차트</th><th>확인 목적</th><th>코드 요소</th></tr>
+      <tr><td>히스토그램+KDE</td><td>매출액의 분포 형태와 치우침 확인</td><td><code>sns.histplot()</code></td></tr>
+      <tr><td>박스플롯</td><td>지역별 중앙값·분산·분포 차이 비교</td><td><code>sns.boxplot()</code></td></tr>
+      <tr><td>월별 라인</td><td>시간 흐름에 따른 총매출 변화 확인</td><td><code>groupby("month")</code></td></tr>
+      <tr><td>상관 히트맵</td><td>수치형 변수 간 선형 관계의 방향과 강도 확인</td><td><code>corr()</code>, <code>sns.heatmap()</code></td></tr>
+    </table>
+    <h3>2.6 가설 설정과 판단 기준</h3>
+    <table><tr><th>검정</th><th>귀무가설(H0)</th><th>대립가설(H1)</th><th>판단</th></tr>
+      <tr><td>t-test</td><td>서울과 부산의 평균 매출이 같다</td><td>두 지역의 평균 매출이 다르다</td><td>p=0.514147 &gt; 0.05이므로 H0를 기각하지 못함</td></tr>
+      <tr><td>카이제곱</td><td>지역과 카테고리는 독립이다</td><td>지역과 카테고리는 관련이 있다</td><td>p=0.009854 &lt; 0.05이므로 H0 기각</td></tr>
+    </table>
+    <div class="note"><b>판단 기준:</b> 유의수준 α=0.05를 사용하며, p-value가 0.05보다 작으면 귀무가설을 기각합니다.</div>
+  </section>
+
+  <section class="page">
+    <h2>3. 실행 결과</h2>
+    <h3>3.1 파이프라인 실행</h3>
+    <div class="terminal-capture"><div class="label">[그림 1] 전체 파이프라인 실행 화면</div><small>가상환경 표시와 python 판교_1반_장현진.py 실행 명령, 데이터 정제·집계·통계·모델 결과가 보이도록 캡처합니다.</small></div>
+    <h3>3.2 실행 결과 전문</h3>
+    <pre>[1] 데이터 기본 정보
+크기: (1,000,000, 11)
+IQR 적용 후 행 수: 973,806
+집계 키 결측 제거 후 행 수: 956,349
+총 제외 행 수: 43,651
+
+[2] 통계 검정
+t-test: t=0.6524, p=0.514147
+카이제곱 검정: chi2=74.9919, 자유도=49, p=0.009854
+
+[3] sklearn Pipeline
+학습 행 수: 160,000, 평가 행 수: 40,000
+R²: 0.8426, RMSE: 834,232.99
+모델 저장: sales_ridge_pipeline.joblib
+재로딩 예측 일치: True
+
+[4] Plotly 차트 저장: regional_category_sales.html
+실습 4 완료: outputs 폴더를 확인합니다.</pre>
+  </section>
+
+  <section class="page">
+    <h2>3. 실행 결과</h2>
+    <h3>3.3 EDA 대시보드</h3>
+    <p>정제 데이터에서 매출액 분포, 지역별 매출액 분포, 월별 총매출 추이, 수치형 변수 상관관계를 하나의 2×2 대시보드로 구성했습니다. 시각화용 데이터는 최대 100,000행을 고정 시드로 샘플링하여 같은 조건에서 다시 실행할 수 있도록 했습니다.</p>
+    <figure><img src="outputs/eda_dashboard.png" alt="EDA 대시보드 실행 결과"><figcaption>[그림 2] outputs/eda_dashboard.png 실행 산출물</figcaption></figure>
+    <h3>3.4 저장 산출물</h3>
+    <div class="output-list"><div>outputs/eda_dashboard.png<br>Matplotlib·Seaborn 대시보드</div><div>outputs/regional_category_sales.html<br>Plotly 인터랙티브 차트</div><div>outputs/sales_ridge_pipeline.joblib<br>학습 완료 Pipeline 모델</div><div>실행 로그<br>통계 검정·평가 지표 출력</div></div>
+    <div class="terminal-capture"><div class="label">[그림 3] outputs 폴더 파일 목록</div><small>ls -lh outputs 실행 결과가 보이도록 캡처합니다.</small></div>
+  </section>
+
+  <section class="page">
+    <h2>4. 코드 구성 및 분석</h2>
+    <h3>4.1 주요 함수와 변수</h3>
+    <table><tr><th>구분</th><th>이름</th><th>역할</th></tr>
+      <tr><td>함수</td><td><code>prepare_output_directory()</code></td><td>outputs 폴더 생성</td></tr>
+      <tr><td>함수</td><td><code>configure_plot_style()</code></td><td>그래프 테마와 macOS 한글 폰트 설정</td></tr>
+      <tr><td>함수</td><td><code>create_eda_dashboard(clean_frame)</code></td><td>2×2 EDA 그래프 생성 및 PNG 저장</td></tr>
+      <tr><td>함수</td><td><code>run_statistical_tests(clean_frame)</code></td><td>t-test와 카이제곱 검정 실행</td></tr>
+      <tr><td>함수</td><td><code>train_and_save_pipeline(clean_frame)</code></td><td>전처리·Ridge 학습, 평가, 저장, 재로딩</td></tr>
+      <tr><td>함수</td><td><code>create_plotly_chart(summary)</code></td><td>지역·카테고리별 HTML 차트 저장</td></tr>
+      <tr><td>변수</td><td><code>clean_frame</code></td><td>실습 3에서 전달된 정제 데이터</td></tr>
+      <tr><td>변수</td><td><code>summary</code></td><td>지역·카테고리별 Pandas 집계 결과</td></tr>
+      <tr><td>변수</td><td><code>numeric_features</code> / <code>categorical_features</code></td><td>모델 입력 수치형·범주형 특성 목록</td></tr>
+      <tr><td>변수</td><td><code>RANDOM_STATE</code> / <code>SIGNIFICANCE_LEVEL</code></td><td>재현성 기준값 / 통계 유의수준</td></tr>
+    </table>
+    <h3>4.2 통계 검정 설계</h3>
+    <p>서울과 부산의 매출 평균 차이는 등분산을 가정하지 않는 Welch t-test로 확인하고, 지역과 카테고리의 관련성은 교차표를 만든 뒤 카이제곱 독립성 검정으로 확인했습니다. 두 검정 모두 유의수준 0.05를 기준으로 p-value를 해석했습니다.</p>
+    <table><tr><th>검정</th><th>결과</th><th>해석</th></tr>
+      <tr><td>서울·부산 t-test</td><td>t=0.6524, p=0.514147</td><td>평균 매출 차이가 유의하지 않음</td></tr>
+      <tr><td>지역·카테고리 카이제곱</td><td>χ²=74.9919, 자유도=49, p=0.009854</td><td>두 변수가 독립적이지 않음</td></tr>
+    </table>
+    <div class="note"><b>분석:</b> 서울과 부산의 평균 매출 차이는 확인되지 않았지만, 지역별 카테고리 구성에는 통계적으로 유의한 차이가 나타났습니다.</div>
+  </section>
+
+  <section class="page">
+    <h2>4. 코드 구성 및 분석</h2>
+    <h3>4.3 머신러닝 Pipeline</h3>
+    <p>학습 특성은 <code>quantity</code>, <code>unit_price</code>, <code>customer_age</code>와 <code>region</code>, <code>category</code>, <code>payment_method</code>, <code>customer_gender</code>로 구성했습니다. 수치형 변수에는 중앙값 대치와 표준화를 적용하고, 범주형 변수에는 최빈값 대치와 원-핫 인코딩을 적용했습니다. 이후 Ridge 회귀 모델을 연결하여 학습·평가·저장·재로딩까지 수행했습니다.</p>
+    <pre>numeric_pipeline = Pipeline([
+    ("imputer", SimpleImputer(strategy="median")),
+    ("scaler", StandardScaler()),
+])
+model_pipeline = Pipeline([
+    ("preprocessor", preprocessor),
+    ("model", Ridge(alpha=1.0)),
+])</pre>
+    <div class="flow"><span>특성 분리</span><b>→</b><span>결측치 처리</span><b>→</b><span>인코딩·표준화</span><b>→</b><span>Ridge 학습</span><b>→</b><span>평가·저장</span></div>
+    <table><tr><th>단계</th><th>사용 객체·메서드</th><th>역할</th></tr>
+      <tr><td>전처리</td><td><code>ColumnTransformer</code></td><td>수치형·범주형 컬럼을 분리해 서로 다른 처리 적용</td></tr>
+      <tr><td>학습</td><td><code>fit()</code></td><td>전처리 기준과 Ridge 회귀 계수를 학습</td></tr>
+      <tr><td>예측</td><td><code>predict()</code></td><td>평가 데이터의 매출액 예측값 생성</td></tr>
+      <tr><td>평가</td><td><code>score()</code>, RMSE</td><td>설명력과 예측 오차 확인</td></tr>
+      <tr><td>저장·복원</td><td><code>joblib.dump()</code>, <code>joblib.load()</code></td><td>전처리와 모델을 함께 재사용</td></tr>
+    </table>
+    <div class="grid">
+      <div class="card"><strong>956,349행</strong>집계 기준 결측 제거 후 정제 행 수</div>
+      <div class="card"><strong>43,651행</strong>IQR 및 집계 키 결측으로 제외된 행 수</div>
+      <div class="card"><strong>R² 0.8426</strong>Ridge 평가 결과</div>
+      <div class="card"><strong>RMSE 834,232.99</strong>평가 데이터 기준 오차</div>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>4. 코드 구성 및 분석</h2>
+    <h3>4.4 정제 및 모델 결과 해석</h3>
+    <p>원본 1,000,000행 중 IQR 정상 범위에 포함되지 않는 행을 먼저 제외하고, 지역과 카테고리 결측 행을 추가로 제거했습니다. 최종 정제 데이터는 집계와 후속 모델 학습의 입력으로 사용되었습니다.</p>
+    <table><tr><th>항목</th><th>실행 결과</th></tr>
+      <tr><td>원본 크기</td><td>1,000,000행 × 11열</td></tr>
+      <tr><td>IQR 적용 후</td><td>973,806행</td></tr>
+      <tr><td>최종 정제 후</td><td>956,349행</td></tr>
+      <tr><td>Pandas 집계 상위</td><td>서울·의류, 총매출 약 74,992,750,000</td></tr>
+    </table>
+    <p>결측치를 제거한 데이터에서 최대 200,000행을 사용하고, 이를 8:2 비율로 나누어 학습 행 160,000개와 평가 행 40,000개를 구성했습니다. R² 0.8426은 평가 데이터의 변동을 비교적 잘 설명한 결과이며, RMSE는 예측값과 실제 매출액 차이의 대표적인 크기를 나타냅니다. 모델 저장 후 재로딩한 예측이 일치하여 저장·복원 흐름도 정상 동작했습니다.</p>
+  </section>
+
+  <section class="page">
+    <h2>5. 검증 결과</h2>
+    <table><tr><th>검증 항목</th><th>결과</th></tr>
+      <tr><td>Python 문법 검사</td><td><code>python3 -m py_compile 판교_1반_장현진.py</code> 통과</td></tr>
+      <tr><td>전체 실행</td><td>EDA 이미지, 모델 파일, Plotly HTML 생성 완료</td></tr>
+      <tr><td>모델 재로딩</td><td><code>재로딩 예측 일치: True</code></td></tr>
+    </table>
+    <div class="terminal-capture"><div class="label">[그림 4] 최종 실행 완료 화면</div><small>실습 4 완료 메시지와 outputs 폴더 확인 결과가 보이도록 캡처합니다.</small></div>
+    <h2>6. 개선 사항</h2>
+    <table><tr><th>현재 한계</th><th>영향</th><th>개선 방향</th></tr>
+      <tr><td>Pandas 집계 함수가 두 번 호출됨</td><td>동일한 집계 결과가 터미널에 중복 출력되고 불필요한 연산이 발생함</td><td>첫 번째 호출에서 반환받은 <code>summary</code>를 재사용하고 두 번째 호출을 제거</td></tr>
+      <tr><td>Ridge 모델 하나만 비교</td><td>모델별 성능 차이를 확인하기 어려움</td><td>선형·트리 계열 모델을 추가하고 동일한 지표로 비교</td></tr>
+      <tr><td>통계 검정의 전제 조건을 별도 점검하지 않음</td><td>검정 결과 해석에 제한이 있음</td><td>분포·표본 크기·기대도수 등을 함께 확인</td></tr>
+      <tr><td>기술통계 표를 별도로 출력하지 않음</td><td>평균·표준편차·분위수 등 기본 분포 수치를 보고서에서 직접 비교하기 어려움</td><td><code>describe()</code> 결과와 왜도·첨도를 표로 추가</td></tr>
+    </table>
+    <h2>7. 최종 정리</h2>
+    <p>이번 실습에서는 하나의 정제 데이터 흐름을 시각화, 통계, 머신러닝 분석으로 확장하고 각각의 결과물을 파일로 저장했습니다. 특히 Pipeline 재로딩 검증을 통해 모델 산출물의 재사용 가능성도 확인했습니다.</p>
+    <ul>
+      <li>EDA 결과를 정적 이미지로 저장해 데이터 특성을 한 화면에서 확인했습니다.</li>
+      <li>통계 검정 결과를 p-value 기준으로 해석해 평균 차이와 변수 관계를 구분했습니다.</li>
+      <li>전처리와 모델을 Pipeline으로 묶어 학습과 재사용 흐름을 일관되게 구성했습니다.</li>
+      <li>이미지·HTML·모델 파일을 outputs 폴더에 분리해 산출물의 목적을 명확히 했습니다.</li>
+    </ul>
+  </section>
+  </main>
+
+  <script>
+    let selectedReportImage = null;
+
+    function selectReportImage(image) {
+      document.querySelectorAll("#report-content img.image-selected").forEach((item) => {
+        item.classList.remove("image-selected");
+      });
+
+      selectedReportImage = image;
+      image.classList.add("image-selected");
+
+      const slider = document.getElementById("image-size");
+      const valueLabel = document.getElementById("image-size-value");
+      const resetButton = document.getElementById("image-reset");
+      const containerWidth = image.parentElement.clientWidth || image.clientWidth;
+      const currentPercent = Math.round((image.getBoundingClientRect().width / containerWidth) * 100);
+
+      slider.disabled = false;
+      resetButton.disabled = false;
+      slider.value = Math.max(30, Math.min(100, currentPercent));
+      valueLabel.textContent = `${slider.value}%`;
+    }
+
+    function insertClipboardImage(file) {
+      const selection = window.getSelection();
+      const savedRange = selection.rangeCount ? selection.getRangeAt(0).cloneRange() : null;
+      const anchorNode = selection.anchorNode;
+      const anchorElement = anchorNode
+        ? (anchorNode.nodeType === Node.ELEMENT_NODE ? anchorNode : anchorNode.parentElement)
+        : null;
+      const placeholder = anchorElement?.closest(".terminal-capture, .capture-placeholder") || null;
+      const placeholderLabel = placeholder?.querySelector(".label")?.textContent
+        || placeholder?.textContent.trim()
+        || "붙여넣은 캡처";
+      const reader = new FileReader();
+
+      reader.addEventListener("load", () => {
+        const figure = document.createElement("figure");
+        figure.className = "pasted-capture";
+
+        const image = document.createElement("img");
+        image.src = reader.result;
+        image.alt = placeholderLabel.replace(/^\[|\]$/g, "");
+        image.style.width = "100%";
+        image.style.maxWidth = "155mm";
+        image.style.height = "auto";
+
+        const caption = document.createElement("figcaption");
+        caption.textContent = placeholderLabel;
+
+        figure.append(image, caption);
+
+        if (placeholder) {
+          placeholder.replaceWith(figure);
+        } else if (savedRange) {
+          savedRange.deleteContents();
+          savedRange.insertNode(figure);
+        } else {
+          document.getElementById("report-content").appendChild(figure);
+        }
+
+        selectReportImage(image);
+      });
+
+      reader.readAsDataURL(file);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const slider = document.getElementById("image-size");
+      const valueLabel = document.getElementById("image-size-value");
+      const resetButton = document.getElementById("image-reset");
+
+      document.getElementById("report-content").addEventListener("click", (event) => {
+        if (event.target.tagName === "IMG") {
+          event.preventDefault();
+          event.stopPropagation();
+          selectReportImage(event.target);
+        }
+      });
+
+      document.getElementById("report-content").addEventListener("paste", (event) => {
+        const imageItem = [...event.clipboardData.items].find((item) => {
+          return item.kind === "file" && item.type.startsWith("image/");
+        });
+
+        if (!imageItem) return;
+
+        const imageFile = imageItem.getAsFile();
+        if (!imageFile) return;
+
+        event.preventDefault();
+        insertClipboardImage(imageFile);
+      });
+
+      slider.addEventListener("input", () => {
+        if (!selectedReportImage) return;
+        selectedReportImage.style.width = `${slider.value}%`;
+        selectedReportImage.style.maxWidth = "none";
+        selectedReportImage.style.height = "auto";
+        valueLabel.textContent = `${slider.value}%`;
+      });
+
+      resetButton.addEventListener("click", () => {
+        if (!selectedReportImage) return;
+        selectedReportImage.style.width = "100%";
+        selectedReportImage.style.maxWidth = "155mm";
+        selectedReportImage.style.height = "auto";
+        slider.value = "100";
+        valueLabel.textContent = "100%";
+      });
+    });
+
+  </script>
+</body>
+</html>

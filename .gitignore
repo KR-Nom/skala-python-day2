@@ -1,0 +1,7 @@
+.DS_Store
+.vscode/
+.venv/
+__pycache__/
+*.py[cod]
+outputs/*.joblib
+sales_100k.csv
